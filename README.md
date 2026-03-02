@@ -1,228 +1,110 @@
-\# AI Repository Summarizer
+It looks like your Markdown file got hit with some aggressive "escape characters" (those backslashes before the underscores and hashtags). This usually happens during certain exports or when copying from specific editors, and it prevents the Markdown from rendering correctly on GitHub or other viewers.
 
+I've cleaned up the syntax, fixed the indentation, and ensured the code blocks are clean for you.
 
+AI Repository Summarizer
+A robust API service that analyzes GitHub repositories and generates structured technical summaries using the Meta-Llama-3.3-70B-Instruct LLM model via Nebius AI Token Factory.
 
-A robust API service that analyzes GitHub repositories and generates structured technical summaries using the \*\*Meta-Llama-3.3-70B-Instruct\*\* LLM model via Nebius AI Token Factory.
-
-
-
-\## Overview
-
-
-
+Overview
 This service accepts a GitHub repository URL, intelligently fetches and filters the codebase to fit within LLM context limits, and returns a JSON summary containing:
 
-\* \*\*Summary:\*\* A human-readable description of the project.
+Summary: A human-readable description of the project.
 
-\* \*\*Technologies:\*\* A list of languages and frameworks used.
+Technologies: A list of languages and frameworks used.
 
-\* \*\*Structure:\*\* A description of the project's architecture and file organization.
+Structure: A description of the project's architecture and file organization.
 
+Setup & Run Instructions
+1. Prerequisites
+Python 3.10+
 
+A Nebius AI Studio API Key
 
-\## Setup \& Run Instructions
+(Optional) A GitHub Personal Access Token (recommended to avoid rate limits).
 
-
-
-\### 1. Prerequisites
-
-\* Python 3.10+
-
-\* A Nebius AI Studio API Key
-
-\* (Optional) A GitHub Personal Access Token (recommended to avoid rate limits).
-
-
-
-\### 2. Installation
-
-
-
+2. Installation
 Clone the repository or extract the zip archive, then open your terminal in the project folder.
 
+Create a virtual environment:
 
-
-\*\*Create a virtual environment:\*\*
-
-```bash
-
+Bash
 python -m venv venv
+Activate the environment:
 
-```
+Windows (Command Prompt):
 
+DOS
+venv\Scripts\activate
+Windows (Git Bash) / Mac / Linux:
 
+Bash
+source venv/bin/activate
+Install dependencies:
 
-\*\*Activate the environment:\*\*
-
-\* \*\*Windows (Command Prompt):\*\*
-
-&nbsp;   ```cmd
-
-&nbsp;   venv\\Scripts\\activate
-
-&nbsp;   ```
-
-\* \*\*Windows (Git Bash) / Mac / Linux:\*\*
-
-&nbsp;   ```bash
-
-&nbsp;   source venv/bin/activate
-
-&nbsp;   ```
-
-
-
-\*\*Install dependencies:\*\*
-
-```bash
-
+Bash
 pip install -r requirements.txt
+3. Configuration
+You must set the NEBIUS_API_KEY environment variable.
 
-```
+Mac / Linux / Git Bash:
 
+Bash
+export NEBIUS_API_KEY="your_nebius_key_here"
+# Optional:
+export GITHUB_TOKEN="your_github_pat_here"
+Windows (Command Prompt):
 
-
-\### 3. Configuration
-
-
-
-You must set the `NEBIUS\_API\_KEY` environment variable.
-
-
-
-\*\*Mac / Linux / Git Bash:\*\*
-
-```bash
-
-export NEBIUS\_API\_KEY="your\_nebius\_key\_here"
-
-\# Optional:
-
-export GITHUB\_TOKEN="your\_github\_pat\_here"
-
-```
-
-
-
-\*\*Windows (Command Prompt):\*\*
-
-```cmd
-
-set NEBIUS\_API\_KEY=your\_nebius\_key\_here
-
-\# Optional:
-
-set GITHUB\_TOKEN=your\_github\_pat\_here
-
-```
-
-
-
-\### 4. Start the Server
-
-
-
-```bash
-
+DOS
+set NEBIUS_API_KEY=your_nebius_key_here
+set GITHUB_TOKEN=your_github_pat_here
+4. Start the Server
+Bash
 python app.py
+The server will start on http://0.0.0.0:8000.
 
-```
+Usage
+Endpoint: POST /summarize
 
-The server will start on `http://0.0.0.0:8000`.
+Request Body:
 
-
-
----
-
-
-
-\## Usage
-
-
-
-\*\*Endpoint:\*\* `POST /summarize`
-
-
-
-\*\*Request Body:\*\*
-
-```json
-
+JSON
 {
-
-&nbsp; "github\_url": "https://github.com/psf/requests"
-
+  "github_url": "https://github.com/psf/requests"
 }
+Example Request (cURL):
 
-```
+Bash
+curl -X POST http://localhost:8000/summarize \
+  -H "Content-Type: application/json" \
+  -d '{"github_url": "https://github.com/psf/requests"}'
+Design Decisions
+1. Model Selection: Meta-Llama-3.3-70B-Instruct
+I selected Llama-3.3-70B for two specific reasons:
 
+Context Window: Its 128k context window allows the API to ingest significantly more file content (multiple source files) compared to smaller models, leading to higher accuracy.
 
+Instruction Following: The 70B parameter model is far more reliable at adhering to the strict JSON schema required by the prompt, minimizing parsing errors.
 
-\*\*Example Request (cURL):\*\*
-
-```bash
-
-curl -X POST http://localhost:8000/summarize \\
-
-&nbsp; -H "Content-Type: application/json" \\
-
-&nbsp; -d '{"github\_url": "https://github.com/psf/requests"}'
-
-```
-
-
-
----
-
-
-
-\## Design Decisions
-
-
-
-\### 1. Model Selection: Meta-Llama-3.3-70B-Instruct
-
-
-
-I selected \*\*Llama-3.3-70B\*\* for two specific reasons:
-
-\* \*\*Context Window:\*\* Its 128k context window allows the API to ingest significantly more file content (multiple source files) compared to smaller models, leading to higher accuracy.
-
-\* \*\*Instruction Following:\*\* The 70B parameter model is far more reliable at adhering to the strict JSON schema required by the prompt, minimizing parsing errors.
-
-
-
-\### 2. Repository Processing Strategy
-
-
-
+2. Repository Processing Strategy
 To handle large repositories efficiently without exceeding token limits or timeouts:
 
+Robust Tree Resolution: Instead of assuming a main branch, the system resolves the specific Commit SHA and Tree SHA. This ensures the API works on any repository state, regardless of branch naming conventions.
 
+Smart Filtering (Scoring System): Files are assigned a priority score.
 
-\* \*\*Robust Tree Resolution:\*\* Instead of assuming a `main` branch, the system resolves the specific Commit SHA and Tree SHA. This ensures the API works on any repository state, regardless of branch naming conventions.
+High Priority: README.md, pyproject.toml, package.json (Context heavy).
 
-\* \*\*Smart Filtering (Scoring System):\*\* Files are assigned a priority score.
+Medium Priority: Entry points like main.py or src/app.js.
 
-&nbsp;   \* \*High Priority:\* `README.md`, `pyproject.toml`, `package.json` (Context heavy).
+Low Priority: tests/, docs/, and deep directory structures.
 
-&nbsp;   \* \*Medium Priority:\* Entry points like `main.py` or `src/app.js`.
+Context Management:
 
-&nbsp;   \* \*Low Priority:\* `tests/`, `docs/`, and deep directory structures.
+Global Limit: The total prompt context is capped at 120,000 characters.
 
-\* \*\*Context Management:\*\*
+Per-File Limit: Individual files are truncated at 8,000 characters to prevent a single massive file (like a lockfile or dataset) from crowding out other important files.
 
-&nbsp;   \* \*\*Global Limit:\*\* The total prompt context is capped at 120,000 characters.
+3. Prompt Engineering
+XML Tagging: File contents are wrapped in <file path='...'> tags. This helps the LLM distinguish between the file's metadata and its actual code content.
 
-&nbsp;   \* \*\*Per-File Limit:\*\* Individual files are truncated at 8,000 characters to prevent a single massive file (like a lockfile or dataset) from crowding out other important files.
-
-
-
-\### 3. Prompt Engineering
-
-
-
-\* \*\*XML Tagging:\*\* File contents are wrapped in `<file path='...'>` tags. This helps the LLM distinguish between the file's metadata and its actual code content.
-
-\* \*\*JSON Enforcement:\*\* The prompt explicitly requests a JSON object and uses the API's `response\_format={"type": "json\_object"}` parameter to guarantee valid output.
-
+JSON Enforcement: The prompt explicitly requests a JSON object and uses the API's response_format={"type": "json_object"} parameter to guarantee valid output.
