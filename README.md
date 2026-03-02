@@ -1,7 +1,3 @@
-It looks like your Markdown file got hit with some aggressive "escape characters" (those backslashes before the underscores and hashtags). This usually happens during certain exports or when copying from specific editors, and it prevents the Markdown from rendering correctly on GitHub or other viewers.
-
-I've cleaned up the syntax, fixed the indentation, and ensured the code blocks are clean for you.
-
 AI Repository Summarizer
 A robust API service that analyzes GitHub repositories and generates structured technical summaries using the Meta-Llama-3.3-70B-Instruct LLM model via Nebius AI Token Factory.
 
