@@ -1,32 +1,34 @@
-AI Repository Summarizer
+# AI Repository Summarizer
 
-A robust API service that analyzes GitHub repositories and generates structured technical summaries using the Meta-Llama-3.3-70B-Instruct LLM model via Nebius AI Token Factory.
+A robust API service that analyzes GitHub repositories and generates structured technical summaries using the **Meta-Llama-3.3-70B-Instruct** LLM model via Nebius AI Token Factory.
 
-Overview
+---
+
+## Overview
 
 This service accepts a GitHub repository URL, intelligently fetches and filters the codebase to fit within LLM context limits, and returns a JSON summary containing:
 
-Summary: A human-readable description of the project.
+* **Summary:** A human-readable description of the project.
+* **Technologies:** A list of languages and frameworks used.
+* **Structure:** A description of the project's architecture and file organization.
 
-Technologies: A list of languages and frameworks used.
+---
 
-Structure: A description of the project's architecture and file organization.
+## Setup & Run Instructions
 
-Setup & Run Instructions
-1. Prerequisites
-Python 3.10+
+### 1. Prerequisites
+* Python 3.10+
+* A Nebius AI Studio API Key
+* (Optional) A GitHub Personal Access Token (recommended to avoid rate limits).
 
-A Nebius AI Studio API Key
+### 2. Installation
 
-(Optional) A GitHub Personal Access Token (recommended to avoid rate limits).
-
-2. Installation
 Clone the repository or extract the zip archive, then open your terminal in the project folder.
 
-Create a virtual environment:
-
-Bash
+**Create a virtual environment:**
+```bash
 python -m venv venv
+
 Activate the environment:
 
 Windows (Command Prompt):
@@ -67,14 +69,14 @@ Request Body:
 
 JSON
 {
-  "github_url": "https://github.com/psf/requests"
+  "github_url": "[https://github.com/psf/requests](https://github.com/psf/requests)"
 }
 Example Request (cURL):
 
 Bash
 curl -X POST http://localhost:8000/summarize \
   -H "Content-Type: application/json" \
-  -d '{"github_url": "https://github.com/psf/requests"}'
+  -d '{"github_url": "[https://github.com/psf/requests](https://github.com/psf/requests)"}'
 Design Decisions
 1. Model Selection: Meta-Llama-3.3-70B-Instruct
 I selected Llama-3.3-70B for two specific reasons:
@@ -88,7 +90,7 @@ To handle large repositories efficiently without exceeding token limits or timeo
 
 Robust Tree Resolution: Instead of assuming a main branch, the system resolves the specific Commit SHA and Tree SHA. This ensures the API works on any repository state, regardless of branch naming conventions.
 
-Smart Filtering (Scoring System): Files are assigned a priority score.
+Smart Filtering (Scoring System): Files are assigned a priority score:
 
 High Priority: README.md, pyproject.toml, package.json (Context heavy).
 
