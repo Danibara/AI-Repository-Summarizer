@@ -25,7 +25,8 @@ This service accepts a GitHub repository URL, intelligently fetches and filters 
 Clone the repository or extract the zip archive, then open your terminal in the project folder.
 
 **Create a virtual environment:**
-```bash
+
+bash
 python -m venv venv
 Activate the environment:
 
