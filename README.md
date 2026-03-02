@@ -1,3 +1,4 @@
+Markdown
 # AI Repository Summarizer
 
 A robust API service that analyzes GitHub repositories and generates structured technical summaries using the **Meta-Llama-3.3-70B-Instruct** LLM model via Nebius AI Token Factory.
@@ -28,7 +29,6 @@ Clone the repository or extract the zip archive, then open your terminal in the 
 **Create a virtual environment:**
 ```bash
 python -m venv venv
-
 Activate the environment:
 
 Windows (Command Prompt):
