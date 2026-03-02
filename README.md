@@ -3,8 +3,6 @@ Markdown
 
 A robust API service that analyzes GitHub repositories and generates structured technical summaries using the **Meta-Llama-3.3-70B-Instruct** LLM model via Nebius AI Token Factory.
 
----
-
 ## Overview
 
 This service accepts a GitHub repository URL, intelligently fetches and filters the codebase to fit within LLM context limits, and returns a JSON summary containing:
@@ -69,14 +67,14 @@ Request Body:
 
 JSON
 {
-  "github_url": "[https://github.com/psf/requests](https://github.com/psf/requests)"
+  "github_url": "https://github.com/psf/requests"
 }
 Example Request (cURL):
 
 Bash
 curl -X POST http://localhost:8000/summarize \
   -H "Content-Type: application/json" \
-  -d '{"github_url": "[https://github.com/psf/requests](https://github.com/psf/requests)"}'
+  -d '{"github_url": "https://github.com/psf/requests"}'
 Design Decisions
 1. Model Selection: Meta-Llama-3.3-70B-Instruct
 I selected Llama-3.3-70B for two specific reasons:
